@@ -1,23 +1,28 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import { routes } from './routes'
 import DefaultComponent from './components/DefaultComponent/DefaultComponent'
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import { isJsonString } from './utils'
-import { jwtDecode } from 'jwt-decode'
+import jwt_decode from "jwt-decode";
 import * as UserService from './service/UserService'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateUser } from './redux/slides/userSlide'
+import Loading from './components/LoadingComponent/Loading'
 
 function App() {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false)
+  const user = useSelector((state) => state.user)
 
   useEffect(() =>{
-  const {storageData, decoded} = handleDecoded()
-    if(decoded?.id){
-        handleGetDetailsUser(decoded?.id, storageData)
-    }
+    setIsLoading(true)
+    const {storageData, decoded} = handleDecoded()
+      if(decoded?.id){
+          handleGetDetailsUser(decoded?.id, storageData)
+      }
+      setIsLoading(false)
   }, [])
 
   const handleDecoded = () =>{
@@ -25,7 +30,7 @@ function App() {
     let decoded = {}
     if(storageData && isJsonString(storageData)){
       storageData = JSON.parse(storageData)
-      decoded = jwtDecode(storageData)
+      decoded = jwt_decode(storageData)
     }
     return { decoded, storageData}
   }
@@ -50,21 +55,24 @@ function App() {
 
   return (
     <div>
-      <Router>
-        <Routes>
-          {routes.map((route) => {
-            const Page = route.page
-            const Layout = route.isShowHeader ? DefaultComponent: Fragment
-            return(
-              <Route key={route.path} path={route.path} element={
-                <Layout>
-                  <Page/>
-                </Layout>
-              }/>
-            )
-          })}
-        </Routes>
-      </Router>
+      <Loading isLoading={isLoading}>
+        <Router>
+          <Routes>
+            {routes.map((route) => {
+              const Page = route.page
+              const ischeckPrivate = !route.isPrivate || user.isAmin
+              const Layout = route.isShowHeader ? DefaultComponent: Fragment
+              return(
+                <Route key={route.path} path={ischeckPrivate && route.path} element={
+                  <Layout>
+                    <Page/>
+                  </Layout>
+                }/>
+              )
+            })}
+          </Routes>
+        </Router>
+      </Loading>
     </div>
     )
 }

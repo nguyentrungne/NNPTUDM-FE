@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as UserService from "../../service/UserService"
 import { resetUser } from "../../redux/slides/userSlide";
 
-const HeaderComponent = () =>{
+const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) =>{
 
     const navigate = useNavigate()
     const user = useSelector((state) => state.user)
@@ -34,23 +34,28 @@ const HeaderComponent = () =>{
     const content = (
     <div>
         <WrapperContentPopup onClick={() => navigate('/profile-user')}>Thông tin người dùng</WrapperContentPopup>
+        {user?.isAdmin &&(
+            <WrapperContentPopup onClick={() => navigate('/system/admin')}>Quản lý hệ thống</WrapperContentPopup>
+        )}
         <WrapperContentPopup>Đăng xuất</WrapperContentPopup>
     </div>
     );
     return(
         <diV style={{  heiht: '100%', width: '100%', background: '#9255FD', justifyContent: 'center' }} >
-            <WrapperHeader>
+            <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset' }}>
                 <Col span={4}>
-                    <WrapperTextHeader>Chua Nghi Ra Ten</WrapperTextHeader>
+                    <WrapperTextHeader>SHOP</WrapperTextHeader>
                 </Col>
-                <Col span={16}>
-                    <ButtonInputSearch
-                        size= "large"
-                        textButton = "Tìm kiếm"
-                        placeholder="input search text"
-                        // onSearch={onSearch}
-                    />
-                </Col>
+                {!isHiddenSearch &&(
+                    <Col span={16}>
+                        <ButtonInputSearch
+                            size= "large"
+                            textButton = "Tìm kiếm"
+                            placeholder="input search text"
+                            // onSearch={onSearch}
+                        />
+                    </Col>
+                )}
                 <Col span={4} style={{ display: "flex", gap: "15px", marginLeft: '25px'}}>
                     <WrapperAccountHeader>
                     <UserOutlined style={{fontSize: '25px', color: "#fff"}} />
@@ -70,11 +75,13 @@ const HeaderComponent = () =>{
                         </div>
                     )}
                     </WrapperAccountHeader>
-                    <WrapperCartHeader>
-                        <Badge count={4} size="small">
-                            <ShoppingCartOutlined style={{fontSize: '25px', color: "#fff"}}/>  
-                        </Badge>
-                    </WrapperCartHeader>
+                    {!isHiddenCart && (
+                        <WrapperCartHeader>
+                            <Badge count={4} size="small">
+                                <ShoppingCartOutlined style={{fontSize: '25px', color: "#fff"}}/>  
+                            </Badge>
+                        </WrapperCartHeader>
+                    )}
                 </Col>
             </WrapperHeader>
         </diV>

@@ -1,5 +1,5 @@
 import React from "react";
-import { SearchOutlined } from '@ant-design/icons';
+import {SearchOutlined} from '@ant-design/icons';
 import InputComponent from '../InputComponent/InputComponent'
 import ButtonComponent from '../ButtonComponent/ButtonComponent'
 

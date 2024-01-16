@@ -11,7 +11,7 @@ import { useMutationHooks } from "../../hooks/usrMutationHook";
 import Loading from '../../components/LoadingComponent/Loading';
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlide";
-import { jwtDecode } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 const SignInPage = () =>{
 
@@ -25,14 +25,14 @@ const SignInPage = () =>{
     const mutation = useMutationHooks(
         data => UserService.loginUser(data)
     )
-    const {data, isPending, isSuccess, isError} = mutation
+    const {data, isLoading, isSuccess, isError} = mutation
 
     useEffect(() =>{
         if(isSuccess){
             navigate('/')
             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
             if(data?.access_token){
-                const decoded = jwtDecode(data?.access_token)
+                const decoded = jwt_decode(data?.access_token)
                 if(decoded?.id){
                     handleGetDetailsUser(decoded?.id, data?.access_token)
                 }
@@ -74,7 +74,7 @@ const SignInPage = () =>{
                 <InputFormComponent style={{marginBottom: '10px'}} placeholder="Nhập username" value={email} onChange={handleOnchangeEmail}/>
                 <InputFormComponent placeholder="Nhập password" value={password} onChange={handleOnchangePassword}/>
                 {data?.status === "ERR" && (<span style={{ color: "red" }}>{data?.message}</span>)}
-                <Loading isLoading={mutation.isPending}>
+                <Loading isLoading={isLoading}>
                     <ButtonComponent
                         onClick={handleSignIn}
                         size={40}
@@ -94,8 +94,7 @@ const SignInPage = () =>{
                 <p>Chưa có tài khoản ? <WrapperTextLight onClick={handleNavigateSignUp}>Tạo tài khoản</WrapperTextLight></p>
             </WrapperContainerLeft>
             <WrapperContainerRight>
-                <Image src={imageLogin} preview={false} alt="image-logo" height="200px" width="280px" />
-                <h4>Nhận nhiều ưu đãi mỗi ngày</h4>
+                <h1 style={{marginLeft: '20px'}}>Chào mừng bạn đến với cửa hàng của chúng tôi </h1>
             </WrapperContainerRight>
         </div>
         </div>

@@ -11,7 +11,7 @@ import Loading from '../../components/LoadingComponent/Loading';
 import * as message from '../../components/Message/Message'
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlide";
-import { jwtDecode } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 const SignUpPage = () =>{
 
@@ -24,14 +24,14 @@ const SignUpPage = () =>{
     const mutation = useMutationHooks(
         data => UserService.signupUser(data)
     )
-    const {data, isPending, isSuccess, isError} = mutation
+    const {data, isLoading, isSuccess, isError} = mutation
 
     useEffect(() =>{
         if(isSuccess){
             navigate('/')
             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
             if(data?.access_token){
-                const decoded = jwtDecode(data?.access_token)
+                const decoded = jwt_decode(data?.access_token)
                 if(decoded?.id){
                     handleGetDetailsUser(decoded?.id, data?.access_token)
                 }
@@ -80,7 +80,7 @@ const SignUpPage = () =>{
                 <InputFormComponent placeholder="Nhập lại password" value={confirmpassword} onChange={handleOnchangeConfirmPassword}/>
             </div>
             {data?.status === "ERR" && (<span style={{ color: "red" }}>{data?.message}</span>)}
-            <Loading isLoading={isPending}> 
+            <Loading isLoading={isLoading}> 
                 <ButtonComponent
                     onClick={handleSignUp}
                     size={40}
@@ -99,8 +99,7 @@ const SignUpPage = () =>{
             <p>Bạn đã có tài khoản ? <WrapperTextLight onClick={handleNavigateSignIn}>Đăng nhập</WrapperTextLight></p>
         </WrapperContainerLeft>
         <WrapperContainerRight>
-            <Image src={imageLogin} preview={false} alt="image-logo" height="200px" width="280px" />
-            <h4>Nhận nhiều ưu đãi mỗi ngày</h4>
+            <h1 style={{marginLeft: '20px'}}>Đăng ký để nhận nhiều ưu đãi mỗi ngày</h1>
         </WrapperContainerRight>
     </div>
     </div>

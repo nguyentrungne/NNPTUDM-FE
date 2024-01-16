@@ -26,7 +26,7 @@ const ProfilePage = () =>{
         }
     )
     const dispatch = useDispatch()
-    const {data, isPending, isSuccess, isError} = mutation
+    const {data, isLoading, isSuccess, isError} = mutation
 
     useEffect(() =>{
         setEmail(user?.email)
@@ -79,7 +79,7 @@ const ProfilePage = () =>{
             <WrapperHeader>
                 Thông tin người dùng
             </WrapperHeader>
-            <Loading isLoading={mutation.isPending}>
+            <Loading isLoading={isLoading}>
                 <WrapperContentProfile>
                     <WrapperInput>
                         <WrapperLabel htmlFor="name">Họ và tên</WrapperLabel>
